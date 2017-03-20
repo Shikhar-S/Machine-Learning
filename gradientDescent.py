@@ -1,3 +1,5 @@
+#L2 Regularised Gradient Descent that takes whole training set per epoch
+#Accuracy 87.0 on regulatization otherwise 83.4%
 from __future__ import print_function
 import numpy as np
 import tensorflow as tf
@@ -45,15 +47,14 @@ with graph.as_default():
     tf.truncated_normal([image_size * image_size, num_labels]))
   biases = tf.Variable(tf.zeros([num_labels]))
   logits = tf.matmul(tf_train_dataset, weights) + biases
-  loss = tf.reduce_mean(
-    tf.nn.softmax_cross_entropy_with_logits(labels=tf_train_labels, logits=logits))
+  loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(labels=tf_train_labels,logits=logits)+0.001*tf.nn.l2_loss(weights))
   optimizer = tf.train.GradientDescentOptimizer(0.5).minimize(loss)
   train_prediction = tf.nn.softmax(logits)
   valid_prediction = tf.nn.softmax(
     tf.matmul(tf_valid_dataset, weights) + biases)
   test_prediction = tf.nn.softmax(tf.matmul(tf_test_dataset, weights) + biases)
 
-  num_steps = 8001
+  num_steps = 3001
 
 def accuracy(predictions, labels):
   return (100.0 * np.sum(np.argmax(predictions, 1) == np.argmax(labels, 1))
@@ -65,10 +66,8 @@ with tf.Session(graph=graph) as session:
   print('Initialized')
   for step in range(num_steps):
     _, l, predictions = session.run([optimizer, loss, train_prediction])
-    if (step % 100 == 0):
-      print('Loss at step %d: %f' % (step, l))
-      print('Training accuracy: %.1f%%' % accuracy(
-        predictions, train_labels[:train_subset, :])
-      print("Validation accuracy: %.1f%%" % accuracy(
-        valid_prediction.eval(), valid_labels))
-  print('Test accuracy: %.1f%%' % accuracy(test_prediction.eval(), test_labels))
+    if(step%100==0):
+      print('Loss at step %d : %f' % (step,l))
+      print('Training accuracy: %.1f' % accuracy(predictions,train_labels[:train_subset,:]))
+      print('Validation accuracy: %.1f' % accuracy(valid_prediction.eval(),valid_labels))
+  print("Test accuracy: %.1f%%" % accuracy(test_prediction.eval(), test_labels))
