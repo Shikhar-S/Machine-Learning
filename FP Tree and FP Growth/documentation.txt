@@ -1,0 +1,19 @@
+Preprocessing the input:
+The input consists of 9 attributes :-
+1. Number of times pregnant 
+2. Plasma glucose concentration a 2 hours in an oral glucose tolerance test 
+3. Diastolic blood pressure (mm Hg) 
+4. Triceps skin fold thickness (mm) 
+5. 2-Hour serum insulin (mu U/ml) 
+6. Body mass index (weight in kg/(height in m)^2) 
+7. Diabetes pedigree function 
+8. Age (years) 
+9. Class variable (0 or 1) 
+Since each of these attributes ,but for the last one, is a continuous variable we have divided the input domain for each variable into bins. The number of bins can be decided by the user. The last variable is either 0 or 1. For dividing into bins the max and min value of each variable is obtained by iterating on the dataset and stored separately. Then any value of attribute is converted in [0,1]. This value multiplied with the user defined number of bin gives the bin in which the variable lies. The FP Tree and FP Growth algorithm then work on this new data item and after generating the support value from FP Tree a script is run on the output to generate the format required by rule generator. This step is needed because the generator is common for both first and second assignment. The output from the generator is then fed to another script that converts back to human readable code format.
+Steps to Compile
+1. Store input dataset as 'data.txt'
+2. Run translateInput.py and redirect the output to 'f.txt'
+3. Compile FPDemo.java and run it redirecting the input as 'f.txt' store its output in 'g.txt'
+4. Run convertOutput.py on 'g.txt' store its output in 'a.txt'
+5. Compile and run Rules.java and store the output in 'i.txt'
+6. Run final.py on 'i.txt' to get back the rules in human readable form
